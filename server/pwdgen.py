@@ -7,7 +7,7 @@ def gerarPassword():
     password = []
 
     for i in range(0,6):
-        index = random.randint(0, len(caracters)-i)
+        index = random.randint(0, len(caracters)-2)
         
         password.append(caracters[index])
 

@@ -1,4 +1,4 @@
-import subprocess, socket, time, sys, os
+import subprocess, socket, time, sys, os, platform, pygame
 from pwdgen import gerarPassword
 from threading import Thread
 
@@ -7,6 +7,7 @@ class VNC():
     def __init__(self):
         self.__vncServerPath = "UltraVNC"
         self.ip = socket.gethostbyname(socket.gethostname())
+        self.desktopName = socket.gethostname()
 
     def runOnCmd(self, cmd):
         output = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
@@ -26,11 +27,11 @@ class VNC():
         
         Thread(target=self.runOnCmd, args=[startServerCMD]).start()
         time.sleep(5)
-        Thread(target=self.testServer()).start()
+        Thread(target=self.testServer).start()
     
         
-
-        print(f"Server UP: {self.ip}")
+        
+        print(f"Desktop Name: {self.desktopName}\nServer UP: {self.ip}")
 
 
     def pararServer(self):
@@ -54,14 +55,14 @@ class VNC():
     def runServer(self):
         
         try:
-            #self.criar2Monitor()
+            self.criar2Monitor()
             self.setPWD()
             self.pararServer()
             time.sleep(3)
             self.rodarServer()
-  
-            
-            #self.criarTela()
+            time.sleep(5)
+            self.setMonitorToExtend()
+            self.lockScreen()
     
         except KeyboardInterrupt:
             print('Interrupted')
@@ -70,7 +71,7 @@ class VNC():
             except SystemExit:
                 os._exit(0)
 
-    def criarTela(self):
+    def lockScreen(self):
         pygame.init()
         tela = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
         
@@ -93,24 +94,62 @@ class VNC():
                         rodando = False  # Set running to False to end the while 
         pygame.quit()
 
-    def verificarSeCriou(self, qtdMonitor):
-        cmd = ["cd", "./dc/", "&", "dc64cmd.exe", "-listmonitors"]
+    def verificarSeCriouMonitor(self, device):
+        cmd = ["cd", "./usbmmidd/", "&", device, 'status', 'usbmmidd']
         output = self.runOnCmd(cmd)
-        qtd2 = output.count("Adapter:")
-        print(qtd2)
-        return qtd2-1 == qtdMonitor
+        if 'Driver is running' in output:
+            print('monitor criado com sucesso!')
+            return True
+        else:
+            print('Monitor não foi criado!')
+            return False
             
+    def getArch(self):
+        try:
+            arch = platform.processor()
+            if '32' in arch:
+                bits = 32
+                return bits
+            else:
+                bits = 64
+                return bits
+        except Exception as e:
+            print(f'Ocorreu um erro: {e}')
+
+
+    def selectDevice(self, bits):
+        if bits == 32:
+            return 'deviceinstaller'
+        else:
+            return 'deviceinstaller64'
 
     def criar2Monitor(self):
-        cmd = ["cd", "./usbmmidd/", "&", "usbmmidd.bat"]
-        qtdMonitor = 1
-        output = self.runOnCmd(cmd)
-        if self.verificarSeCriou(qtdMonitor):
-            print("Monitor Virtual criado com sucesso!")
-        else:
-            print("Houve um erro ao criar o Monitor!")
-            print(output)
-        
+
+        try:
+            bits = self.getArch()
+            device = self.selectDevice(bits)
+            cmd = ["cd", "./usbmmidd/", "&", device, 'status', 'usbmmidd']
+
+            output= self.runOnCmd(cmd)
+            if 'No matching devices found.' in output:
+                cmd = ["cd", "./usbmmidd/", "&", device, 'install' , 'usbmmidd.inf', 'usbmmidd']
+                output = self.runOnCmd(cmd)
+                if self.verificarSeCriouMonitor(device):
+                    print('ativando monitor')
+                    cmd = ["cd", "./usbmmidd/", "&", device, 'enableidd' , '1']
+                    self.runOnCmd(cmd)
+            else:
+                print('Monitor virtual já existe!\nAtivando monitor\nMonitor Ativado!')
+                cmd = ["cd", "./usbmmidd/", "&", device, 'enableidd' , '1']
+                self.runOnCmd(cmd)
+
+        except Exception as e:
+            print(f'Ocorreu um erro {e}')
+
+    def setMonitorToExtend(self):
+        cmd = ["DisplaySwitch.exe", "/extend"]
+        self.runOnCmd(cmd)
+
 v = VNC()
 v.runServer()
 
