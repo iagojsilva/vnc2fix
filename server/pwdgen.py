@@ -2,7 +2,7 @@ import random
 
 def gerarPassword():
     alphabet = 'abcdefghijklmnopqrstuvwxyz'
-    caracters = alphabet + alphabet.upper() + '1234567890!@#$%&*()'
+    caracters = alphabet + alphabet.upper() + '1234567890!@#$%*()'
     
     password = []
 
