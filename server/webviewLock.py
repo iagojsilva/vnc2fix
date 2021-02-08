@@ -5,12 +5,12 @@ from threading import Thread
 
 def lockPerifericos():
     windll.user32.BlockInput(True)
-    time.sleep(30)
-    windll.user32.BlockInput(False)
+    #time.sleep(30)
+    #windll.user32.BlockInput(False)
 
 def webViewScreen(link):
     try:
-        webview.create_window(title='', url=link , fullscreen=True)
+        webview.create_window(title='Lockscreen', url=link , fullscreen=True)
         webview.start()
     except KeyboardInterrupt:
         sys.exit(0)
