@@ -2,6 +2,7 @@ import subprocess, socket, time, sys, os, platform
 from pwdgen import gerarPassword
 from threading import Thread
 from webviewLock import builderWebView
+from windowsManager import moveAll
 
 class VNC():
     
@@ -123,6 +124,8 @@ class VNC():
             self.pararServer()
             Thread(target=self.setMonitorToExtend).start()
             self.rodarServer()
+            time.sleep(10)
+            moveAll()
             self.lockScreen()
     
         except KeyboardInterrupt:
