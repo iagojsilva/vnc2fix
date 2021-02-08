@@ -2,7 +2,7 @@ import subprocess
 
 class VNC():
     def __init__(self):
-        self.__clientIP = "192.168.1.32"
+        self.__clientIP = "192.168.1.34"
 
     def runOnCmd(self, cmd):
         output = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
