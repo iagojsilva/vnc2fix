@@ -2,6 +2,8 @@ import subprocess, socket, time, sys, os, platform
 from pwdgen import gerarPassword
 from threading import Thread
 from webviewLock import builderWebView
+sys.path.append('../httpC')
+from httpClient import HTTP
 
 class VNC():
     
@@ -11,7 +13,12 @@ class VNC():
         self.__displayPath = os.path.dirname(os.path.abspath(__file__))+ "/DisplaySwitch.exe"
 
         self.ip = socket.gethostbyname(socket.gethostname())
-        self.desktopName = socket.gethostname()
+        self.desktopName = str(input("Identifique esse PC com um nome: "))
+        self.htmlURL = str(input("URL da tela de bloqueio: "))
+        self.loginPWD = gerarPassword()
+        self.viewPWD = gerarPassword()
+
+        self.h = HTTP()
 
     def runOnCmd(self, cmd):
         output = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
@@ -47,18 +54,17 @@ class VNC():
 
 
     def setPWD(self):
-        loginPWD = gerarPassword()
-        viewPWD = gerarPassword()
-
-        print(f'configurando password: {loginPWD}')
         
-        setPwdCMD = ["cd", self.__vncServerPath, "&", "setpasswd.exe", f'{loginPWD}', f'{viewPWD}']
+
+        #print(f'configurando password: {loginPWD}')
+        
+        setPwdCMD = ["cd", self.__vncServerPath, "&", "setpasswd.exe", f'{self.loginPWD}', f'{self.viewPWD}']
 
         self.runOnCmd(setPwdCMD)
 
 
-    def lockScreen(self):
-        builderWebView('https://pywebview.flowrl.com/hello')
+    def lockScreen(self, url):
+        builderWebView(url)
 
     def verificarSeCriouMonitor(self, device):
         cmd = ["cd", self.__usbmmiddPath, "&", device, 'status', 'usbmmidd']
@@ -116,14 +122,27 @@ class VNC():
         cmd = [self.__displayPath, "/extend"]
         self.runOnCmd(cmd)
 
+    def postPC(self):
+        data = {
+            "pcName": self.desktopName,
+            "ip": self.ip,
+            "htmlURL": self.htmlURL,
+            "password": self.loginPWD,
+            "isLocked": True
+        }
+
+        self.h.postPC(data)
+
+
     def builder(self):
         try:
+            self.postPC()
             self.criar2Monitor()
             self.setPWD()
             self.pararServer()
             Thread(target=self.setMonitorToExtend).start()
             self.rodarServer()
-            self.lockScreen()
+            self.lockScreen(self.htmlURL)
     
         except KeyboardInterrupt:
             print('Interrupted')
