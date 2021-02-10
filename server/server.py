@@ -2,8 +2,12 @@ import subprocess, socket, time, sys, os, platform
 from pwdgen import gerarPassword
 from threading import Thread
 from webviewLock import builderWebView
+<<<<<<< HEAD
 sys.path.append('../httpC')
 from httpClient import HTTP
+=======
+from windowsManager import moveAll
+>>>>>>> 6e91ab1f63e2ec1be756f9e4b21726aa48c49e76
 
 class VNC():
     
@@ -142,7 +146,13 @@ class VNC():
             self.pararServer()
             Thread(target=self.setMonitorToExtend).start()
             self.rodarServer()
+<<<<<<< HEAD
             self.lockScreen(self.htmlURL)
+=======
+            time.sleep(10)
+            moveAll()
+            self.lockScreen()
+>>>>>>> 6e91ab1f63e2ec1be756f9e4b21726aa48c49e76
     
         except KeyboardInterrupt:
             print('Interrupted')

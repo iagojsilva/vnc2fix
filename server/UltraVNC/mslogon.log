@@ -84,6 +84,7 @@
 5/2/2021 15:34   Connection received from 192.168.1.45
 5/2/2021 15:34   Connection received from 192.168.1.45
 5/2/2021 15:35   Client 192.168.1.45 disconnected
+<<<<<<< HEAD
 8/2/2021 17:26   Connection received from 192.168.1.31
 8/2/2021 17:26   Connection received from 192.168.1.31
 8/2/2021 17:28   Client 192.168.1.31 disconnected
@@ -93,3 +94,31 @@
 10/2/2021 18:50   Connection received from 192.168.1.32
 10/2/2021 18:50   Connection received from 192.168.1.32
 10/2/2021 18:50   Client 192.168.1.32 disconnected
+=======
+8/2/2021 17:08   Connection received from 192.168.1.32
+8/2/2021 17:08   Connection received from 192.168.1.32
+8/2/2021 17:09   Client 192.168.1.32 disconnected
+8/2/2021 17:12   Connection received from 192.168.1.32
+8/2/2021 17:12   Invalid attempt from client 192.168.1.32
+8/2/2021 17:13   Connection received from 192.168.1.32
+8/2/2021 17:13   Connection received from 192.168.1.32
+8/2/2021 17:24   Client 192.168.1.32 disconnected
+8/2/2021 18:10   Connection received from 192.168.1.32
+8/2/2021 18:10   Invalid attempt from client 192.168.1.32
+8/2/2021 18:10   Connection received from 192.168.1.32
+8/2/2021 18:10   Invalid attempt from client 192.168.1.32
+8/2/2021 18:11   Connection received from 192.168.1.32
+8/2/2021 18:11   Connection received from 192.168.1.32
+8/2/2021 18:26   Client 192.168.1.32 disconnected
+8/2/2021 18:31   Connection received from 192.168.1.32
+8/2/2021 18:31   Invalid attempt from client 192.168.1.32
+8/2/2021 18:31   Connection received from 192.168.1.32
+8/2/2021 18:31   Connection received from 192.168.1.32
+8/2/2021 18:33   Client 192.168.1.32 disconnected
+8/2/2021 18:35   Connection received from 192.168.1.32
+8/2/2021 18:35   Connection received from 192.168.1.32
+8/2/2021 18:36   Client 192.168.1.32 disconnected
+8/2/2021 18:37   Connection received from 192.168.1.32
+8/2/2021 18:37   Connection received from 192.168.1.32
+8/2/2021 18:39   Client 192.168.1.32 disconnected
+>>>>>>> 6e91ab1f63e2ec1be756f9e4b21726aa48c49e76
