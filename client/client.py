@@ -12,14 +12,14 @@ class VNC():
 
     def connect(self, PCData):
         print(f"Conectando a máquina: {PCData['pcName']}")
-        cmd = ["vncviewer.exe", PCData['ip'][7:], "-password", f"{PCData['password']}"]
+        cmd = ["vncviewer.exe", PCData['ip'], "-password", f"{PCData['password']}"]
         output = self.runOnCmd(cmd)
         print(output)
 
     def choose(self):
         print(f'-'*10, 'Escolha uma Máquina para se conectar!','-'*10,)
         for i in self.__h.getPCs():
-            print(f"[+] ID: {i['id']} \nPC: {i['pcName']}\nIP: {i['ip'][7:]}")
+            print(f"[+] ID: {i['id']} \nPC: {i['pcName']}\nIP: {i['ip']}")
         machine = int(input('Escolha por ID: '))
         self.connect(self.__h.getPCByID(machine))
 

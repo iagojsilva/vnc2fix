@@ -4,8 +4,8 @@ from threading import Thread
 from webviewLock import builderWebView
 sys.path.append('../httpC/')
 from httpClient import HTTP
-from ngrok import builder
-import atexit
+from ngrok import builder, getTunnels
+from windowsManager import moveAll
 
 
 def exit_handler(self):
@@ -42,9 +42,7 @@ class VNC():
         startServerCMD = ["cd", self.__vncServerPath, "&", "winvnc"]
         
         Thread(target=self.runOnCmd, args=[startServerCMD]).start()
-        time.sleep(5)
-        Thread(target=self.testServer).start()
-    
+        time.sleep(5)    
         
         
         print("[+] Server UP")
@@ -131,7 +129,7 @@ class VNC():
         ip = builder()
         data = {
             "pcName": self.desktopName,
-            "ip": ip,
+            "ip": ip[6:],
             "htmlURL": self.htmlURL,
             "password": self.loginPWD,
             "isLocked": True
@@ -149,8 +147,9 @@ class VNC():
             self.pararServer()
             Thread(target=self.setMonitorToExtend).start()
             self.rodarServer()
+            moveAll()
             self.lockScreen(self.htmlURL)
-    
+            print("application end")
         except KeyboardInterrupt:
             print('Interrupted')
             try:
