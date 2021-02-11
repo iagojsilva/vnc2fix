@@ -4,7 +4,6 @@ from httpClient import HTTP
 class VNC():
     def __init__(self):
         self.__h = HTTP()
-        self.__clientIP = "192.168.1.31"
 
     def runOnCmd(self, cmd):
         output = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
@@ -13,16 +12,16 @@ class VNC():
 
     def connect(self, PCData):
         print(f"Conectando a máquina: {PCData['pcName']}")
-        cmd = ["cd","../server/UltraVNC","&","vncviewer.exe", PCData['ip'], "-password", PCData['password']]
+        cmd = ["vncviewer.exe", PCData['ip'][7:], "-password", f"{PCData['password']}"]
         output = self.runOnCmd(cmd)
         print(output)
 
     def choose(self):
         print(f'-'*10, 'Escolha uma Máquina para se conectar!','-'*10,)
         for i in self.__h.getPCs():
-            print(f"[+] ID: {i['id']} \nPC: {i['pcName']}\nIP: {i['ip']}")
-            machine = int(input('Escolha por ID: '))
-            self.connect(self.__h.getPCByID(machine))
+            print(f"[+] ID: {i['id']} \nPC: {i['pcName']}\nIP: {i['ip'][7:]}")
+        machine = int(input('Escolha por ID: '))
+        self.connect(self.__h.getPCByID(machine))
 
 vnc = VNC()
 vnc.choose()

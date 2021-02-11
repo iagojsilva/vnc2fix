@@ -24,7 +24,7 @@ class HTTP():
             "isLocked": pcDATA["isLocked"]
         }
         r = requests.post(self.__url, data=data, auth=HTTPBasicAuth('bruno', '1'))
-        if r.status_code == 200:
+        if r.status_code == 201:
             print("[+] API ok")
         else:
             print(r)

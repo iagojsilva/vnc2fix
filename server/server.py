@@ -2,12 +2,14 @@ import subprocess, socket, time, sys, os, platform
 from pwdgen import gerarPassword
 from threading import Thread
 from webviewLock import builderWebView
-<<<<<<< HEAD
-sys.path.append('../httpC')
+sys.path.append('../httpC/')
 from httpClient import HTTP
-=======
-from windowsManager import moveAll
->>>>>>> 6e91ab1f63e2ec1be756f9e4b21726aa48c49e76
+from ngrok import builder
+import atexit
+
+
+def exit_handler(self):
+    print('my aplication exiting')
 
 class VNC():
     
@@ -16,7 +18,6 @@ class VNC():
         self.__usbmmiddPath = os.path.dirname(os.path.abspath(__file__)) + "/usbmmidd/"
         self.__displayPath = os.path.dirname(os.path.abspath(__file__))+ "/DisplaySwitch.exe"
 
-        self.ip = socket.gethostbyname(socket.gethostname())
         self.desktopName = str(input("Identifique esse PC com um nome: "))
         self.htmlURL = str(input("URL da tela de bloqueio: "))
         self.loginPWD = gerarPassword()
@@ -31,12 +32,12 @@ class VNC():
         
 
     def testServer(self):
-        print(f'verificando o server...')
+        #print(f'verificando o server...')
         
         pass
 
     def rodarServer(self):
-        print(f'Rodando o server!')
+        #print(f'Rodando o server!')
         
         startServerCMD = ["cd", self.__vncServerPath, "&", "winvnc"]
         
@@ -46,11 +47,11 @@ class VNC():
     
         
         
-        print(f"Desktop Name: {self.desktopName}\nServer UP: {self.ip}")
+        print("[+] Server UP")
 
 
     def pararServer(self):
-        print(f'Derrubando qualquer instacia de VNC!')
+        #print(f'Derrubando qualquer instacia de VNC!')
 
         stopServerCMD = ["cd", self.__vncServerPath, "&", "winvnc", "-kill"]
         self.runOnCmd(stopServerCMD)
@@ -74,10 +75,10 @@ class VNC():
         cmd = ["cd", self.__usbmmiddPath, "&", device, 'status', 'usbmmidd']
         output = self.runOnCmd(cmd)
         if 'Driver is running' in output:
-            print('monitor criado com sucesso!')
+            #print('monitor criado com sucesso!')
             return True
         else:
-            print('Monitor não foi criado!')
+            #print('Monitor não foi criado!')
             return False
             
     def getArch(self):
@@ -111,11 +112,11 @@ class VNC():
                 cmd = ["cd", self.__usbmmiddPath, "&", device, 'install' , 'usbmmidd.inf', 'usbmmidd']
                 output = self.runOnCmd(cmd)
                 if self.verificarSeCriouMonitor(device):
-                    print('ativando monitor')
+                    #print('ativando monitor')
                     cmd = ["cd", self.__usbmmiddPath, "&", device, 'enableidd' , '1']
                     self.runOnCmd(cmd)
             else:
-                print('Monitor virtual já existe!\nAtivando monitor\nMonitor Ativado!')
+                #print('Monitor virtual já existe!\nAtivando monitor\nMonitor Ativado!')
                 cmd = ["cd", self.__usbmmiddPath, "&", device, 'enableidd' , '1']
                 self.runOnCmd(cmd)
 
@@ -127,9 +128,10 @@ class VNC():
         self.runOnCmd(cmd)
 
     def postPC(self):
+        ip = builder()
         data = {
             "pcName": self.desktopName,
-            "ip": self.ip,
+            "ip": ip,
             "htmlURL": self.htmlURL,
             "password": self.loginPWD,
             "isLocked": True
@@ -140,19 +142,14 @@ class VNC():
 
     def builder(self):
         try:
+            print("Estamos acertando as coisas para voce!\nIsso pode demorar um pouquinho")
             self.postPC()
             self.criar2Monitor()
             self.setPWD()
             self.pararServer()
             Thread(target=self.setMonitorToExtend).start()
             self.rodarServer()
-<<<<<<< HEAD
             self.lockScreen(self.htmlURL)
-=======
-            time.sleep(10)
-            moveAll()
-            self.lockScreen()
->>>>>>> 6e91ab1f63e2ec1be756f9e4b21726aa48c49e76
     
         except KeyboardInterrupt:
             print('Interrupted')
