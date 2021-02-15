@@ -3,15 +3,15 @@ from requests.auth import HTTPBasicAuth
 
 class HTTP():
     def __init__(self):
-        self.__url = "http://192.168.1.34:8000/dados/"
+        self.__url = "https://api-vnc.herokuapp.com/dados/"
 
     def getPCs(self):
-        r = requests.get(self.__url, auth=HTTPBasicAuth('bruno', '1'))
+        r = requests.get(self.__url, auth=HTTPBasicAuth('u34726', 'kQPxp0^UG77&'))
         if r.status_code == 200:
             return r.json()
 
     def getPCByID(self, id):
-        r = requests.get(self.__url+str(id), auth=HTTPBasicAuth('bruno', '1'))
+        r = requests.get(self.__url+str(id), auth=HTTPBasicAuth('u34726', 'kQPxp0^UG77&'))
         if r.status_code == 200:
             return r.json()
 
@@ -23,7 +23,7 @@ class HTTP():
             "htmlURL": pcDATA["htmlURL"],
             "isLocked": pcDATA["isLocked"]
         }
-        r = requests.post(self.__url, data=data, auth=HTTPBasicAuth('bruno', '1'))
+        r = requests.post(self.__url, data=data, auth=HTTPBasicAuth('u34726', 'kQPxp0^UG77&'))
         if r.status_code == 201:
             print("[+] API ok")
         else:
