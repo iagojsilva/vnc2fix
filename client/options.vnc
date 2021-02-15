@@ -1,2 +1,4 @@
 [connection]
-index=
+index=BA
+A=http://4.tcp.ngrok.io:18246/
+B=4.tcp.ngrok.io:18246/
